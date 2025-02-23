@@ -882,7 +882,7 @@
     webpack "5.98.0"
     webpack-node-externals "3.0.0"
 
-"@nestjs/common@^11.0.0", "@nestjs/common@^11.0.1":
+"@nestjs/common@^10.0.0 || ^11.0.0", "@nestjs/common@^11.0.0", "@nestjs/common@^11.0.1", "@nestjs/common@^11.0.2":
   version "11.0.10"
   resolved "https://registry.npmjs.org/@nestjs/common/-/common-11.0.10.tgz"
   integrity sha512-pzGXp14KF2Q4CDZGQgPK4l8zEg7i6cNkb+10yc8ZA5K41cLe3ZbWW1YxtY2e/glHauOJwTLSVjH4tiRVtOTizg==
@@ -891,7 +891,7 @@
     tslib "2.8.1"
     uid "2.0.2"
 
-"@nestjs/core@^11.0.0", "@nestjs/core@^11.0.1":
+"@nestjs/core@^11.0.0", "@nestjs/core@^11.0.1", "@nestjs/core@^11.0.2":
   version "11.0.10"
   resolved "https://registry.npmjs.org/@nestjs/core/-/core-11.0.10.tgz"
   integrity sha512-f0qB8ztNWZeAD4E4fUdHConmNYCa/A78U7WJu5mX9OLYfOAs3ESYCDfsH9MRUvkA4Ft4Y1uMmyJo5L4fg4+beg==
@@ -902,6 +902,11 @@
     path-to-regexp "8.2.0"
     tslib "2.8.1"
     uid "2.0.2"
+
+"@nestjs/mapped-types@*":
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-2.1.0.tgz"
+  integrity sha512-W+n+rM69XsFdwORF11UqJahn4J3xi4g/ZEOlJNL6KoW5ygWSmBB2p0S2BZ4FQeS/NDH72e6xIcu35SfJnE8bXw==
 
 "@nestjs/platform-express@^11.0.0", "@nestjs/platform-express@^11.0.1":
   version "11.0.10"
@@ -924,6 +929,13 @@
     comment-json "4.2.5"
     jsonc-parser "3.3.1"
     pluralize "8.0.0"
+
+"@nestjs/serve-static@^5.0.3":
+  version "5.0.3"
+  resolved "https://registry.npmjs.org/@nestjs/serve-static/-/serve-static-5.0.3.tgz"
+  integrity sha512-0jFjTlSVSLrI+mot8lfm+h2laXtKzCvgsVStv9T1ZBZTDwS26gM5czIhIESmWAod0PfrbCDFiu9C1MglObL8VA==
+  dependencies:
+    path-to-regexp "8.2.0"
 
 "@nestjs/testing@^11.0.1":
   version "11.0.10"
@@ -1615,7 +1627,9 @@
   dependencies:
     "@nestjs/common" "^11.0.1"
     "@nestjs/core" "^11.0.1"
+    "@nestjs/mapped-types" "*"
     "@nestjs/platform-express" "^11.0.1"
+    "@nestjs/serve-static" "^5.0.3"
     "03-pokedex" "file:"
     reflect-metadata "^0.2.2"
     rxjs "^7.8.1"
@@ -2712,7 +2726,7 @@ expect@^29.0.0, expect@^29.7.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
-express@5.0.1:
+express@^5.0.1, express@5.0.1:
   version "5.0.1"
   resolved "https://registry.npmjs.org/express/-/express-5.0.1.tgz"
   integrity sha512-ORF7g6qGnD+YtUG9yx4DFoqCShNMmUKiXuT5oWMHiOvt/4WFbHC6yCwQMTSBMno7AqntNCAzzcnnjowRkTL9eQ==
