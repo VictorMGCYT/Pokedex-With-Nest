@@ -34,8 +34,8 @@ export class PokemonService {
 
   }
 
-  findAll() {
-    return `This action returns all pokemon`;
+  async findAll() {
+    return await this.pokemonModel.find();
   }
 
   async findOne(term: string) {
@@ -85,11 +85,11 @@ export class PokemonService {
 
   }
 
-  async remove(term: string) {
+  async remove(id: string) {
 
-    const pokemon: Pokemon = await this.findOne( term )
-
-    return pokemon;
+    const pokemon: Pokemon = await this.findOne( id )
+    await pokemon.deleteOne()
+    return {msg: "Pokemon Deleted"};
   }
 
   private handleExceptions( error: any ){

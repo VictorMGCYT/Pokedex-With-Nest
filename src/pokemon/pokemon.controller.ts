@@ -24,13 +24,13 @@ export class PokemonController {
   } 
 
   @Patch(':term')
-  update(@Param('term') term: string, @Body() updatePokemonDto: UpdatePokemonDto) {
+  async update(@Param('term') term: string, @Body() updatePokemonDto: UpdatePokemonDto) {
 
-    return this.pokemonService.update(term, updatePokemonDto);
+    return await this.pokemonService.update(term, updatePokemonDto);
   }
 
-  @Delete(':term')
-  remove(@Param('term') term: string) {
-    return this.pokemonService.remove(term);
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return await this.pokemonService.remove(id);
   }
 }
