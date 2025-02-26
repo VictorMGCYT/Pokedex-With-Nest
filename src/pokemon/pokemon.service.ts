@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { Pokemon } from './entities/pokemon.entity';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
@@ -27,33 +27,78 @@ export class PokemonService {
       return pokemon;
 
     } catch (error) {
-      // ! En lugar de consultar la base y ver si existe
-      // ! directamente vemos el código del error y si es 11,000 significa que el dato ya existe
-      if (error.code === 11000) {
-        throw new BadRequestException(`Pokemon already exist in the DB ${ JSON.stringify(error.keyValue) }`)
-      }
-      console.log(error);
-      throw new InternalServerErrorException(`Can't create Pokemon - Check server logs`);
+      
+      this.handleExceptions(error);
+
     }
 
-    const pokemon = await this.pokemonModel.create( createPokemonDto )
-
-    return pokemon;
   }
 
   findAll() {
     return `This action returns all pokemon`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} pokemon`;
+  async findOne(term: string) {
+
+    // ! Definimos la variable pokemon del tipo Pokemon or null, y por defecto iniciamos en null
+    let pokemon: Pokemon | null = null;
+
+    // Buscamos primero por el número del pokemon
+    if (!isNaN(+term)) {
+      pokemon = await this.pokemonModel.findOne({no: term})
+    }
+    // Si no está lo primero validamos si es un MongoID y lo buscamos
+    else if ( isValidObjectId(term) ) {
+      pokemon = await this.pokemonModel.findById(term)
+    }
+    // Si nada funcionó pokemon seguira siendo null, así que ya solo buscamos si lo encuentra por nombre
+    else if (!pokemon) {
+      pokemon = await this.pokemonModel.findOne({name: term.toLowerCase().trim()})
+    }
+
+    if(!pokemon){
+      throw new NotFoundException(`Pokemon with id, name or no "${term} was not found"`)
+    }
+  
+    
+    return pokemon;
+  } 
+
+  async update(term: string, updatePokemonDto: UpdatePokemonDto) {
+
+    const pokemon: Pokemon = await this.findOne(term)
+
+    if (updatePokemonDto.name) {
+      updatePokemonDto.name = updatePokemonDto.name?.toLocaleLowerCase();
+    }
+    
+    try {
+
+      await pokemon.updateOne(updatePokemonDto, {new: true})
+      return {...pokemon.toJSON(), ...updatePokemonDto};
+
+    } catch (error) {
+      
+      this.handleExceptions(error);
+     
+    }
+
   }
 
-  update(id: number, updatePokemonDto: UpdatePokemonDto) {
-    return `This action updates a #${id} pokemon`;
+  async remove(term: string) {
+
+    const pokemon: Pokemon = await this.findOne( term )
+
+    return pokemon;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} pokemon`;
+  private handleExceptions( error: any ){
+    // ! En lugar de consultar la base y ver si existe
+      // ! directamente vemos el código del error y si es 11,000 significa que el dato ya existe
+    if (error.code === 11000) {
+      throw new BadRequestException(`Pokemon already exist in the DB ${ JSON.stringify(error.keyValue) }`)
+    }
+    console.log(error);
+    throw new InternalServerErrorException(`Can't create Pokemon - Check server logs`);
   }
 }
