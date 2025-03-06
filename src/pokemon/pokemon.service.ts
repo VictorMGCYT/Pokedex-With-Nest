@@ -4,6 +4,7 @@ import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { Pokemon } from './entities/pokemon.entity';
 import { isValidObjectId, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class PokemonService {
@@ -34,8 +35,13 @@ export class PokemonService {
 
   }
 
-  async findAll() {
-    return await this.pokemonModel.find();
+  async findAll( paginationDto: PaginationDto ) {
+    return await this.pokemonModel.find()
+      .limit(paginationDto.limit ?? 10)
+      .skip(paginationDto.offset ?? 0)
+      .sort({ no: 1})
+      .select('-__v') //Para quitar propiedades que no queremos mostrar
+
   }
 
   async findOne(term: string) {

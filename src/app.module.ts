@@ -1,5 +1,6 @@
 
 import { join } from 'path';
+import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { PokemonModule } from './pokemon/pokemon.module';
@@ -9,19 +10,28 @@ import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
+    // ! Importar el módulo de configuración de variables de entorno
+    ConfigModule.forRoot(),
     // Importanción para servir archivos estaticos de la carpeta public
     ServeStaticModule.forRoot({
-    rootPath: join(__dirname,'..','public'),
+      rootPath: join(__dirname,'..','public'),
     }),
-
+    
     // Conexión a la base de datos
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/nest-pokemon'),
-
+    MongooseModule.forRoot( process.env.MONGODB ?? "" ),
+    
     PokemonModule,
 
     CommonModule,
 
-    SeedModule 
+    SeedModule
+
   ],
 })
-export class AppModule {}
+export class AppModule {
+
+  constructor(){
+    console.log(process.env);
+  }
+
+}
