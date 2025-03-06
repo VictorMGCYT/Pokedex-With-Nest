@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { Pokemon } from './entities/pokemon.entity';
@@ -9,13 +10,21 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 @Injectable()
 export class PokemonService {
 
+
+  private defaultLimit: number;
+
+
   // ** Aquí inyectamos el modelo para hacer insersiones en la base de datos
   // ** Colocamos el decorador InjectModel ya que esto cómo tal no es un servicio o providers
   // ** Y de esa manera ya podemos hacer la inyeccion de dependencias
   constructor(
     @InjectModel( Pokemon.name )
-    private readonly pokemonModel: Model<Pokemon>
+    private readonly pokemonModel: Model<Pokemon>,
+
+    private readonly configService: ConfigService
   ){
+    
+    this.defaultLimit = configService.get<number>('defaultLimit') ?? 10;
 
   }
 
@@ -37,7 +46,7 @@ export class PokemonService {
 
   async findAll( paginationDto: PaginationDto ) {
     return await this.pokemonModel.find()
-      .limit(paginationDto.limit ?? 10)
+      .limit(paginationDto.limit ?? this.defaultLimit)
       .skip(paginationDto.offset ?? 0)
       .sort({ no: 1})
       .select('-__v') //Para quitar propiedades que no queremos mostrar
